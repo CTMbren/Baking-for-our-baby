@@ -55,6 +55,7 @@ input, select, textarea {
   font: inherit; padding: .6rem; border: 2px solid var(--line); border-radius: 8px; background: #fff; color: var(--brown);
 }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+.hint { font-weight: normal; font-size: .8rem; opacity: .8; }
 .hp { position: absolute; left: -9999px; height: 0; overflow: hidden; }
 
 .summary { margin-top: 2rem; text-align: center; }

@@ -110,6 +110,7 @@
     if (!f.name.value.trim()) return showError("Please enter your name.");
     if (!/^\S+@\S+\.\S+$/.test(f.email.value.trim()))
       return showError("Please enter a valid email so we can confirm your order.");
+    if (!f.passphrase.value.trim()) return showError("Please enter the passphrase.");
     if (SETTINGS.orderEndpoint.indexOf("PASTE_") === 0)
       return showError("This page isn't connected to the order system yet (see README step 3).");
 
@@ -119,6 +120,7 @@
     body.set("phone", f.phone.value.trim());
     body.set("pickup", f.pickup.value);
     body.set("notes", f.notes.value.trim());
+    body.set("passphrase", f.passphrase.value.trim());
     body.set("website", f.website.value); // honeypot
     body.set("items", JSON.stringify(items));
     body.set("total", orderTotal().toFixed(2));
@@ -126,13 +128,19 @@
     submitBtn.disabled = true;
     submitBtn.textContent = "Sending...";
     try {
-      // no-cors: the browser can't read Apps Script's reply, but the order still arrives.
-      await fetch(SETTINGS.orderEndpoint, { method: "POST", mode: "no-cors", body });
+      const res = await fetch(SETTINGS.orderEndpoint, { method: "POST", body });
+      const out = await res.json();
+      if (!out.ok) {
+        showError(out.error === "passphrase"
+          ? "That passphrase isn't right. Please check it and try again."
+          : "Sorry, we couldn't process that order. Please check your details and try again.");
+        return;
+      }
       form.hidden = true;
       document.getElementById("thanks").hidden = false;
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
-      showError("Sorry, something went wrong sending your order. Please check your connection and try again.");
+      showError("We couldn't confirm that your order went through. Please check your email for a confirmation before trying again.");
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = "Send my order";

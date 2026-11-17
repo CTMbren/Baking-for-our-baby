@@ -8,6 +8,7 @@
 
 const NOTIFY_EMAIL = "you@example.com"; // <-- put YOUR email here
 const SEND_CUSTOMER_COPY = true;        // set to false to skip the customer email
+const PASSPHRASE = "fertility"; // not case-sensitive
 const SHEET_NAME = "Orders";
 const CURRENCY = "$";
 const SIGN_OFF = "Brendan & family"; // <-- how you want to sign the customer email
@@ -18,12 +19,16 @@ function doPost(e) {
   // Spam trap: bots fill in the hidden "website" field, people don't.
   if (p.website) return ok_();
 
+  if (String(p.passphrase || "").trim().toLowerCase() !== PASSPHRASE.trim().toLowerCase()) {
+    return json_({ ok: false, error: "passphrase" });
+  }
+
   const name = clean_(p.name), email = clean_(p.email);
-  if (!name || !email) return ok_();
+  if (!name || !email) return json_({ ok: false, error: "invalid" });
 
   let items = [];
-  try { items = JSON.parse(p.items || "[]"); } catch (err) { return ok_(); }
-  if (!items.length || items.length > 20) return ok_();
+  try { items = JSON.parse(p.items || "[]"); } catch (err) { return json_({ ok: false, error: "invalid" }); }
+  if (!items.length || items.length > 20) return json_({ ok: false, error: "invalid" });
 
   const lines = items.map(function (i) {
     return Math.min(Number(i.qty) || 0, 20) + " x " + clean_(i.name) + " @ " + CURRENCY + Number(i.price).toFixed(2);
@@ -99,5 +104,9 @@ function clean_(v) {
 }
 
 function ok_() {
-  return ContentService.createTextOutput("ok");
+  return json_({ ok: true });
+}
+
+function json_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
