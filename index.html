@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Baking for Our Baby</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <h1 id="title"></h1>
+    <p id="tagline" class="tagline"></p>
+  </header>
+
+  <main>
+    <section class="intro">
+      <p id="intro"></p>
+      <p id="deadline" class="deadline"></p>
+    </section>
+
+    <form id="orderForm" novalidate>
+      <h2>1. Choose your treats</h2>
+      <div id="menu" class="menu"></div>
+
+      <h2>2. Your details</h2>
+      <div class="fields">
+        <label>Name *
+          <input type="text" name="name" required autocomplete="name">
+        </label>
+        <label>Email *
+          <input type="email" name="email" required autocomplete="email">
+        </label>
+        <label>Phone
+          <input type="tel" name="phone" autocomplete="tel">
+        </label>
+        <label>Pickup or delivery *
+          <select name="pickup" id="pickup" required></select>
+        </label>
+        <label class="wide">Preferred date / time, allergies, or notes
+          <textarea name="notes" rows="3"></textarea>
+        </label>
+        <!-- Spam trap: real people never see or fill this in -->
+        <div class="hp" aria-hidden="true">
+          <label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+        </div>
+      </div>
+
+      <div class="summary">
+        <div class="total">Total: <strong id="total"></strong></div>
+        <p id="paymentNote" class="note"></p>
+        <p id="error" class="error" role="alert" hidden></p>
+        <button type="submit" id="submitBtn">Send my order</button>
+      </div>
+    </form>
+
+    <section id="thanks" class="thanks" hidden>
+      <h2>Thank you!</h2>
+      <p>Your order has been sent. We'll be in touch soon to confirm it. A copy is on its way to your email.</p>
+      <button type="button" id="again">Place another order</button>
+    </section>
+  </main>
+
+  <footer><p>Made with love (and a lot of butter).</p></footer>
+
+  <script src="menu.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
